@@ -36,7 +36,7 @@ class btree
     void insert( int key, node *leaf);
     void remove( int key, node *leaf);
     node *search( int key, node *leaf);
-
+    int minvalue( node* leaf);
     node *root;
 };
 
@@ -55,9 +55,17 @@ void btree::remove( int key)
   remove( key, root);
 }
 
+int btree::minvalue( node* leaf)
+{
+  if( leaf->left == NULL) { return leaf->key_value; }
+  else{ 
+     return minvalue( leaf->left);
+  }
+}
+
 void btree::remove( int key, node* leaf)
 {
-  node* n = search( key, node);
+  node* n = search( key, leaf);
 
   // not exist!
   if( !n) return;
@@ -65,7 +73,7 @@ void btree::remove( int key, node* leaf)
   // removing node has no child!
   if( !(n->left) && !(n->right)) {
     if( n->parent->left == n) { n->parent->left = NULL; }
-    else( n->parent->right = NULL; }
+    else{ n->parent->right = NULL; }
     delete n;
     return;
   }
@@ -88,7 +96,12 @@ void btree::remove( int key, node* leaf)
   }
 
   // removing node has two child! (most complicated case)
-  // TODO
+  /// find a minimum value in the right subtree;
+  /// replace value of the node to be removed with found minimum. Now, right subtree contains a duplicate!
+  n->key_value = minvalue(n->right);
+  /// apply remove to the right subtree to remove a duplicate.
+  remove( n->key_value, n->right);
+  return;
 }
 
 void btree::destroy_tree(node *leaf)
