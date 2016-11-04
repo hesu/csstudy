@@ -9,8 +9,9 @@ using namespace std;
 struct node
 {
 	int key_value;
-	node* left;
+	node *left;
 	node *right;
+  node *parent;
 };
 
 class btree 
@@ -25,12 +26,15 @@ class btree
     void pre_traverse( node* leaf);
     void inorder_traverse( node* leaf);
     void post_traverse( node* leaf);
+    
+    void remove( int key);
 
     node* getroot() { return root; }
 
   private:
     void destroy_tree( node *leaf);
     void insert( int key, node *leaf);
+    void remove( int key, node *leaf);
     node *search( int key, node *leaf);
 
     node *root;
@@ -44,6 +48,47 @@ btree::btree()
 btree::~btree()
 {
   destroy_tree( root);
+}
+
+void btree::remove( int key)
+{
+  remove( key, root);
+}
+
+void btree::remove( int key, node* leaf)
+{
+  node* n = search( key, node);
+
+  // not exist!
+  if( !n) return;
+
+  // removing node has no child!
+  if( !(n->left) && !(n->right)) {
+    if( n->parent->left == n) { n->parent->left = NULL; }
+    else( n->parent->right = NULL; }
+    delete n;
+    return;
+  }
+
+  // removing node has one child(at left)
+  if( n->left && !(n->right)) {
+    if( n->parent->left == n) { n->parent->left = n->left; }
+    else { n->parent->right = n->left; }
+    n->left->parent = n->parent;
+    delete n;
+    return;
+  }
+  
+  // removing node has one child(at right)
+  if( n->right && !(n->left)) {
+    if( n->parent->left == n) { n->parent->left = n->right; }
+    else { n->parent->right = n->right; }
+    delete n; 
+    return;
+  }
+
+  // removing node has two child! (most complicated case)
+  // TODO
 }
 
 void btree::destroy_tree(node *leaf)
@@ -72,6 +117,7 @@ void btree::insert( int key, node *leaf)
       leaf->left->key_value = key;
       leaf->left->left=NULL; // sets the left child of the child node to null
       leaf->left->right=NULL; // sets the right child of the child node to null
+      leaf->left->parent = leaf;
     }
   } else { // key >= leaf->key_value
     if(leaf->right != NULL) {
@@ -81,6 +127,7 @@ void btree::insert( int key, node *leaf)
       leaf->right->key_value = key;
       leaf->right->left = NULL; // sets the left child of the child node to null
       leaf->right->right = NULL; // sets the right child of the child node to null
+      leaf->right->parent = leaf;
     }
   }
 }
@@ -93,6 +140,7 @@ void btree::insert( int key)
     root->key_value = key;
     root->left = NULL;
     root->right = NULL;
+    root->parent = NULL;
   }
 }
 
