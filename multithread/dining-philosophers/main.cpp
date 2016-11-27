@@ -10,91 +10,64 @@
 
 using namespace std;
 
-class Chopstick 
-{ 
-public: 
-    Chopstick(){}; 
-    mutex m; 
-}; 
- 
-int main() 
-{ 
-    auto eat = [](Chopstick* leftChopstick, Chopstick* rightChopstick, int philosopherNumber, int leftChopstickNumber, int rightChopstickNumber) 
-    { 
-        if (leftChopstick == rightChopstick) 
-            //throw exception("Left and right chopsticks should not be the same!"); 
-            throw "Left and right chopsticks should not be the same!"; 
- 
-        lock(leftChopstick->m, rightChopstick->m);                // ensures there are no deadlocks 
- 
-        lock_guard<mutex> a(leftChopstick->m, adopt_lock); 
-        string sl = "   Philosopher " + to_string(philosopherNumber) + " picked " + to_string(leftChopstickNumber) + " chopstick.\n"; 
-        cout << sl.c_str(); 
- 
-        lock_guard<mutex> b(rightChopstick->m, adopt_lock);                     
-        string sr = "   Philosopher " + to_string(philosopherNumber) + " picked " + to_string(rightChopstickNumber) + " chopstick.\n"; 
-        cout << sr.c_str(); 
- 
-        string pe = "Philosopher " + to_string(philosopherNumber) + " eats.\n"; 
-        cout << pe; 
- 
-        //std::chrono::milliseconds timeout(500); 
-        //std::this_thread::sleep_for(timeout); 
-    }; 
- 
-    static const int numPhilosophers = 5; 
- 
-    // 5 utencils on the left and right of each philosopher. Use them to acquire locks. 
-    vector< unique_ptr<Chopstick> > chopsticks(numPhilosophers); 
- 
-    for (int i = 0; i < numPhilosophers; ++i) 
-    { 
-        auto c1 = unique_ptr<Chopstick>(new Chopstick()); 
-        chopsticks[i] = move(c1); 
-    } 
- 
-    // This is where we create philosophers, each of 5 tasks represents one philosopher. 
-    vector<thread> tasks(numPhilosophers); 
- 
-    tasks[0] = thread(eat,  
-            chopsticks[0].get(),                        // left chopstick:  #1 
-            chopsticks[numPhilosophers - 1].get(),        // right chopstick: #5 
-            0 + 1,                                        // philosopher number 
-            1, 
-            numPhilosophers 
-        ); 
- 
-    for (int i = 1; i < numPhilosophers; ++i) 
-    { 
-        tasks[i] = (thread(eat,  
-                chopsticks[i - 1].get(),                // left chopstick 
-                chopsticks[i].get(),                    // right chopstick 
-                i + 1,                                    // philosopher number 
-                i, 
-                i + 1 
-                ) 
-            ); 
-    } 
- 
-    // May eat! 
-    for_each(tasks.begin(), tasks.end(), mem_fn(&thread::join)); 
- 
-    return 0; 
-} 
-/* 
-   Philosopher 1 picked 1 chopstick. 
-   Philosopher 3 picked 2 chopstick. 
-   Philosopher 1 picked 5 chopstick. 
-   Philosopher 3 picked 3 chopstick. 
-Philosopher 1 eats. 
-Philosopher 3 eats. 
-   Philosopher 5 picked 4 chopstick. 
-   Philosopher 2 picked 1 chopstick. 
-   Philosopher 2 picked 2 chopstick. 
-   Philosopher 5 picked 5 chopstick. 
-Philosopher 2 eats. 
-Philosopher 5 eats. 
-   Philosopher 4 picked 3 chopstick. 
-   Philosopher 4 picked 4 chopstick. 
-Philosopher 4 eats. 
-*/
+class Chopstick
+{
+  public:
+    Chopstick() {};
+};
+
+void eat( Chopstick* left, Chopstick *right, int philoId, int leftChopstickId, int rightChopstickId)
+{
+  if( left == right) 
+    throw "left chopstick && right chopstick should not be the same!";
+
+  string sl = "  Philosopher " + to_string(philoId) + " picked " + to_string( leftChopstickId) + " chopstick.";
+  cout << sl << endl;
+  
+  string sr = "  Philosopher " + to_string(philoId) + " picked " + to_string( rightChopstickId) + " chopstick.";
+  cout << sr << endl;
+
+  string pe = "Philosopher " + to_string( philoId) + " eats.";
+  cout << pe << endl;
+
+  return;
+}
+
+int main()
+{
+  // philosopher 수 만큼의 chopstick 을 만들고 준비해둔다.
+  static int nPhilo = 5;
+  vector<unique_ptr<Chopstick>> chopsticks(nPhilo);
+  
+  for(int i=0; i<nPhilo; ++i) {
+    auto c1 = unique_ptr<Chopstick>(new Chopstick());
+    chopsticks[i] = move(c1);
+  }
+
+  vector<thread> tasks(nPhilo);
+
+  // 첫번째 철학자만 젓가락이 자기 옆, 맨끝 옆 젓가락이다.
+  tasks[0] = thread( eat,
+      chopsticks[0].get(),
+      chopsticks[nPhilo - 1].get(),
+      0+1,
+      1,
+      nPhilo);
+
+  // 나머지는 자기 양옆 젓가락을 쓴다.
+  for(int i=1; i< nPhilo; ++i)
+  {
+    tasks[i] = thread( eat,
+        chopsticks[i-1].get(),
+        chopsticks[i].get(),
+        i+1,
+        i,
+        i+1
+      );
+  }
+
+  // Many eat!
+  for_each( tasks.begin(), tasks.end(), mem_fn(&thread::join));
+
+  return 0;
+}
