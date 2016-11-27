@@ -29,11 +29,11 @@ void think_and_eat( Chopstick* left, Chopstick *right, int philoId, int leftChop
 
     // eat
     left->m.lock();
-    string sl = "  Philosopher " + to_string(philoId) + " picked " + to_string( leftChopstickId) + " chopstick.";
+    string sl = "  (L)Philosopher " + to_string(philoId) + " picked " + to_string( leftChopstickId) + " chopstick.";
     cout << sl << endl;
 
     right->m.lock();
-    string sr = "  Philosopher " + to_string(philoId) + " picked " + to_string( rightChopstickId) + " chopstick.";
+    string sr = "  (R)Philosopher " + to_string(philoId) + " picked " + to_string( rightChopstickId) + " chopstick.";
     cout << sr << endl;
 
     string pe = "Philosopher " + to_string( philoId) + " eats.";
@@ -62,9 +62,9 @@ int main()
   tasks[0] = thread( think_and_eat,
       chopsticks[0].get(),
       chopsticks[nPhilo - 1].get(),
-      0+1,
-      1,
-      nPhilo);
+      0,
+      0,
+      nPhilo-1);
 
   // 나머지는 자기 양옆 젓가락을 쓴다.
   for(int i=1; i< nPhilo; ++i)
@@ -72,9 +72,9 @@ int main()
     tasks[i] = thread( think_and_eat,
         chopsticks[i-1].get(),
         chopsticks[i].get(),
-        i+1,
         i,
-        i+1
+        i-1,
+        i
       );
   }
 
