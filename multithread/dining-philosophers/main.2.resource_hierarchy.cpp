@@ -1,3 +1,9 @@
+/*
+	Amend your program so that it never reaches a state where philosophers are
+	deadlocked, that is, it is never the case that each philosopher holds one chopstick
+	and is stuck waiting for another to get the second chopstick.
+*/
+
 #include <algorithm> 
 #include <chrono> 
 #include <iostream> 
