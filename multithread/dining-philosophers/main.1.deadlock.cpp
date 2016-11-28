@@ -14,6 +14,7 @@ class Chopstick
 {
   public:
     Chopstick() {};
+    mutex m;
 };
 
 void think_and_eat( Chopstick* left, Chopstick *right, int philoId, int leftChopstickId, int rightChopstickId)
@@ -27,14 +28,19 @@ void think_and_eat( Chopstick* left, Chopstick *right, int philoId, int leftChop
       throw "left chopstick && right chopstick should not be the same!";
 
     // eat
+    left->m.lock();
     string sl = "  (L)Philosopher " + to_string(philoId) + " picked " + to_string( leftChopstickId) + " chopstick.";
     cout << sl << endl;
 
+    right->m.lock();
     string sr = "  (R)Philosopher " + to_string(philoId) + " picked " + to_string( rightChopstickId) + " chopstick.";
     cout << sr << endl;
 
     string pe = "Philosopher " + to_string( philoId) + " eats.";
     cout << pe << endl;
+
+    left->m.unlock();
+    right->m.unlock();
   }
   return;
 }
