@@ -7,8 +7,19 @@
 #include <thread> 
 #include <vector> 
 #include <exception> 
+#include <csignal>
 
 using namespace std;
+
+unsigned int howmanyeat[5];
+
+void signal_handler(int signal)
+{
+  cout << "==================" << endl;
+  for(int i=0; i<5;i++){ cout << "[" << i << "] : " << howmanyeat[i] << endl; }
+  cout << "==================" << endl;
+  exit(0);
+}
 
 class Chopstick
 {
@@ -38,6 +49,7 @@ void think_and_eat( Chopstick* left, Chopstick *right, int philoId, int leftChop
 
     string pe = "Philosopher " + to_string( philoId) + " eats.";
     cout << pe << endl;
+    howmanyeat[philoId]++;
 
     left->m.unlock();
     right->m.unlock();
@@ -47,6 +59,9 @@ void think_and_eat( Chopstick* left, Chopstick *right, int philoId, int leftChop
 
 int main()
 {
+  // ctrl+c signal capture
+  std::signal(SIGINT, signal_handler);
+
   // philosopher 수 만큼의 chopstick 을 만들고 준비해둔다.
   static int nPhilo = 5;
   vector<unique_ptr<Chopstick>> chopsticks(nPhilo);
