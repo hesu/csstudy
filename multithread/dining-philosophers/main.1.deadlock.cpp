@@ -1,3 +1,10 @@
+/*
+. Write a program to simulate the behavior of the philosophers, where each
+philosopher is a thread and the chopsticks are shared objects. Notice that you
+must prevent a situation where two philosophers hold the same chopstick at
+the same time
+*/
+
 #include <algorithm> 
 #include <chrono> 
 #include <iostream> 

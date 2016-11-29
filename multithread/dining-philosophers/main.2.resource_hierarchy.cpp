@@ -1,3 +1,9 @@
+/*
+	Amend your program so that it never reaches a state where philosophers are
+	deadlocked, that is, it is never the case that each philosopher holds one chopstick
+	and is stuck waiting for another to get the second chopstick.
+*/
+
 #include <algorithm> 
 #include <chrono> 
 #include <iostream> 
@@ -28,31 +34,31 @@ class Chopstick
     mutex m;
 };
 
-void think_and_eat( Chopstick* left, Chopstick *right, int philoId, int leftChopstickId, int rightChopstickId)
+void think_and_eat( Chopstick* first, Chopstick *second, int philoId, int firstChopstickId, int secondChopstickId)
 {
   while( true) {
 
     // think
     this_thread::sleep_for(chrono::milliseconds(10));
 
-    if( left == right) 
-      throw "left chopstick && right chopstick should not be the same!";
+    if( first == second) 
+      throw "first chopstick && second chopstick should not be the same!";
 
     // eat
-    left->m.lock();
-    string sl = "  (L)Philosopher " + to_string(philoId) + " picked " + to_string( leftChopstickId) + " chopstick.";
+    first->m.lock();
+    string sl = "  (L)Philosopher " + to_string(philoId) + " picked " + to_string( firstChopstickId) + " chopstick.";
     cout << sl << endl;
 
-    right->m.lock();
-    string sr = "  (R)Philosopher " + to_string(philoId) + " picked " + to_string( rightChopstickId) + " chopstick.";
+    second->m.lock();
+    string sr = "  (R)Philosopher " + to_string(philoId) + " picked " + to_string( secondChopstickId) + " chopstick.";
     cout << sr << endl;
 
     string pe = "Philosopher " + to_string( philoId) + " eats.";
     cout << pe << endl;
     howmanyeat[philoId]++;
 
-    left->m.unlock();
-    right->m.unlock();
+    first->m.unlock();
+    second->m.unlock();
   }
   return;
 }
@@ -73,7 +79,7 @@ int main()
 
   vector<thread> tasks(nPhilo);
 
-  // 첫번째 철학자만 젓가락이 자기 옆, 맨끝 옆 젓가락이다.
+  // 첫번째 철학자는 작은 넘버의 젓가락부터 잡는다.
   tasks[0] = thread( think_and_eat,
       chopsticks[0].get(),
       chopsticks[nPhilo - 1].get(),
@@ -81,7 +87,7 @@ int main()
       0,
       nPhilo-1);
 
-  // 나머지는 자기 양옆 젓가락을 쓴다.
+  // 나머지는 큰 넘버 젓가락부터 잡는다.
   for(int i=1; i< nPhilo; ++i)
   {
     tasks[i] = thread( think_and_eat,
