@@ -15,8 +15,16 @@ class Filter implements Lock {
 		for(int i = 1; i < n; i++) { // attempt level 1
 			level[me] = i;
 			victim[i] = me;
-			// spin while conflicts exist
-			while(( Ek != me) ( level[k] >= i && victim[i] == me)) {};
+		
+			// slightly changed by :
+			// http://stackoverflow.com/questions/19909639/filter-lock-algorithm
+			
+			for(int k=0; i<n; k++) {
+				while((k != me) && (level[k] >= i && victim[i] == me)) {
+					// spin while conflicts exist
+				}
+			}
+
 		}
 	}
 
