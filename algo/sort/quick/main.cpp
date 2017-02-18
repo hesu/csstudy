@@ -9,20 +9,39 @@
 
 using namespace std;
 
-void quicksort(vector<int>& v)
+void quicksort(vector<int>& v, int left, int right)
 {
-  int len = v.size();
-  int ipivot = (len-1)/2;
-  
-  cout << "ipivot=" << ipivot << " val=" << v[ipivot] << endl;
+  int i=left, j=right;
+  int pivot = v[(left+right)/2];
+  int tmp;
 
-  // left side (left values < pivot)
-  for(int i=0; i<ipivot; i++)
-  {
+  // partition
+  while (i<=j) {
+    while (v[i] < pivot) {
+      i++;
+    }
+    while (v[j] > pivot) {
+      j--;
+    }
 
+    if (i<=j) {
+      tmp = v[i];
+      v[i] = v[j];
+      v[j] = tmp;
+      i++;
+      j--;
+    }
   }
 
-  // right side(right values > pivot)
+  // recursion
+  if (left<j) {
+    quicksort(v, left, j);
+  }
+
+  if (i<right) {
+    quicksort(v, i, right);
+  }
+
 
 }
 
@@ -40,7 +59,7 @@ int main(int argc, char** argv)
   cout << "\n" << endl;
 
   // quick sort
-  quicksort(v);
+  quicksort(v, 0, 99);
 
   cout << "after sort : ";
   for(int i=0; i<100; i++) cout << v[i] << " ";
