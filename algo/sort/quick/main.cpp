@@ -9,40 +9,40 @@
 
 using namespace std;
 
+int partition(vector<int>&v, int left, int right)
+{
+  int ipivot = (left+right)/2;
+
+  int swap = v[ipivot];
+  v[ipivot] = v[right];
+  v[right] = swap;
+
+  int store = left;
+
+  for(int i=left;i<right; i++) {
+    if (v[i] <= v[right]) {
+      swap = v[i];
+      v[i] = v[store];
+      v[store] = swap;
+
+      store++;
+    }
+  }
+
+  swap = v[right];
+  v[right] = v[store];
+  v[store] = swap;
+
+  return store;
+}
+
 void quicksort(vector<int>& v, int left, int right)
 {
-  int i=left, j=right;
-  int pivot = v[(left+right)/2];
-  int tmp;
-
-  // partition
-  while (i<=j) {
-    while (v[i] < pivot) {
-      i++;
-    }
-    while (v[j] > pivot) {
-      j--;
-    }
-
-    if (i<=j) {
-      tmp = v[i];
-      v[i] = v[j];
-      v[j] = tmp;
-      i++;
-      j--;
-    }
+  if (left<right) {
+    int pi = partition(v, left, right);
+    quicksort( v, left, pi-1);
+    quicksort( v, pi+1, right);
   }
-
-  // recursion
-  if (left<j) {
-    quicksort(v, left, j);
-  }
-
-  if (i<right) {
-    quicksort(v, i, right);
-  }
-
-
 }
 
 int main(int argc, char** argv)
