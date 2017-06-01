@@ -1,3 +1,6 @@
+#ifndef STUDENT_H
+#define STUDENT_H
+
 #include "Person.h"
 #include <vector>
 
@@ -12,3 +15,5 @@ class Student : public Person
     void getdata();
     void putdata();
 };
+
+#endif

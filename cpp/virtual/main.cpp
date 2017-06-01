@@ -7,11 +7,10 @@
 #include <iostream>
 #include <ctime>
 
-#include "Professor.h"
-#include "Student.h"
-
 using namespace std;
 
+#include "Professor.h"
+#include "Student.h"
 
 int main(int argc, char** argv)
 {
@@ -27,11 +26,11 @@ int main(int argc, char** argv)
   {
     cin >> val;
     if( val == 1) {
-      cout << "professor" << endl;
+//      cout << "professor" << endl;
       per[i] = new Professor;
     }
     else {
-      cout << "student" << endl;
+ //     cout << "student" << endl;
       per[i] = new Student;
     }
 

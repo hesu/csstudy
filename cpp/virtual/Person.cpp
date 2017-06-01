@@ -6,30 +6,30 @@ using namespace std;
 
 void Person::setname(const char* name)
 {
+  strcpy( this->name, name);
 }
 
 void Person::setage(int age)
 {
+  this->age = age;
+}
+    
+const char* Person::getname()
+{
+  return name;
+}
+
+const int Person::getage()
+{
+  return age;
 }
 
 void Person::getdata()
 {
-  /*
-  char name[64];
-  int age;
-  
-  cin >> name;
-  strcpy(this->name, name);
-
-  cin >> age;
-  this->age = age;
-  */
-
   cout << "Person::getdata()" << endl;
 }
 
 void Person::putdata()
 {
-  //cout << name << " " << age << endl;
   cout << "Person::putdata()" << endl;
 }

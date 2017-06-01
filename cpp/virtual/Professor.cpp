@@ -6,26 +6,26 @@
 
 using namespace std;
 
+static int id = 0;
+
 void Professor::getdata()
 {
-  cout << "Professor::Getdata()" << endl;
-  vector<string> vec;
-  string line;
-  getline(cin, line);
+  string name;
+  string age;
+  string publications;
+  
+  cin >> name;
+  cin >> age;
+  cin >> publications;
 
-  istringstream iss(line);
-  string token;
-  while(getline(iss, token, ' ')) {
-    vec.push_back(token);
-  }
-
-  this->setname(vec[0].c_str());
-  this->setage(stoi(vec[1]));
-  this->publications = stoi(vec[2]);
+  this->setname(name.c_str());
+  this->setage(stoi(age));
+  this->publications = stoi(publications);
+  this->cur_id = (++id);
+//  cout << "name=" << name << " age=" << age << " publications=" << publications << " cur_id=" << cur_id << endl;
 }
 
 void Professor::putdata()
 {
-  this->putdata();
-  cout << " " << this->publications << endl;
+  cout << this->getname() << " " << this->getage() << " " << this->publications << " " << this->cur_id << endl;
 }

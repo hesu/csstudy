@@ -5,16 +5,29 @@
 
 using namespace std;
 
+static int id = 0;
+
 void Student::getdata()
 {
+  string name;
+  cin >> name;
+
+  int age;
+  cin >> age;
+
+ // cout << "name=" << name << " age=" << age << endl;
+
   for(int i=0; i<6; i++)
   {
     int mark;
     cin >> mark;
     marks.push_back(mark);
+//    cout << mark << endl;
   }
 
-  cin >> cur_id;
+  this->setname(name.c_str());
+  this->setage(age);
+  this->cur_id = (++id);
 }
 
 void Student::putdata()
@@ -25,6 +38,5 @@ void Student::putdata()
     sum += marks[i];
   }
 
-  this->putdata();
-  cout << sum << " " << cur_id << endl;
+  cout << this->getname() << " " << this->getage() << " " << sum << " " << cur_id << endl;
 }

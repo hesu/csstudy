@@ -12,6 +12,9 @@ class Person
   public:
     void setname(const char* name);
     void setage(int age);
+    
+    const char* getname();
+    const int getage();
 
     virtual void getdata();
     virtual void putdata();
